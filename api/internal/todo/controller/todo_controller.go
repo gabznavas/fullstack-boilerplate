@@ -22,7 +22,7 @@ func (c *TodoController) CreateTodo(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	todoResponse, err := c.todoService.CreateTodo(todo)
+	todoResponse, err := c.todoService.CreateTodo(ctx, todo)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -31,7 +31,7 @@ func (c *TodoController) CreateTodo(ctx *gin.Context) {
 }
 
 func (c *TodoController) GetAllTodos(ctx *gin.Context) {
-	todos, err := c.todoService.GetAllTodos()
+	todos, err := c.todoService.GetAllTodos(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
