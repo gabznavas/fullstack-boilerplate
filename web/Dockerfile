@@ -28,14 +28,3 @@ COPY --from=builder /app/public ./public
 EXPOSE 3000
 
 CMD ["npm", "run", "start"]
-
-# Para buildar a imagem passando a variável de ambiente:
-# docker build --build-arg NEXT_PUBLIC_API_URL=http://localhost:8080 -t gabrielnavas/aws-web:v1.0.0 .
-
-# Para subir a imagem AWS Web para o Docker Hub:
-# docker push gabrielnavas/aws-web:v1.0.0
-# docker tag gabrielnavas/aws-web:v1.0.0 gabrielnavas/aws-web:latest
-# docker push gabrielnavas/aws-web:latest
-
-# Para executar o container na porta 3000:
-# docker run -p 3000:3000 gabrielnavas/aws-web:v1.0.0
