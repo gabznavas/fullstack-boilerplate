@@ -19,6 +19,12 @@ RUN go build -o main main.go
 # Estágio final usando imagem vazia para container mínimo
 FROM scratch
 
+ARG REDIS_URI
+ENV REDIS_URI=$REDIS_URI
+
+ARG POSTGRES_URI
+ENV POSTGRES_URI=$POSTGRES_URI
+
 # Copia o binário compilado do estágio de construção para a imagem final
 COPY --from=builder /app/main /main
 

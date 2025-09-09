@@ -5,10 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Table, TableCaption, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { useForm } from "react-hook-form";
+import { useForm } from 'react-hook-form';
 import { useEffect, useState } from "react";
 import { Todo } from "@/types/todo";
-import { createTodo, getAllTodos } from "@/services/requests";
+import { API_URL, createTodo, getAllTodos } from "@/services/requests";
 
 const todoFormSchema = yup.object().shape({
   title: yup.string().required(),
@@ -24,6 +24,7 @@ export default function Home() {
   })
 
   useEffect(() => {
+    console.log("API_URL", API_URL);
     const fetchTodos = async () => {
       const todos = await getAllTodos();
       setTodos(todos);

@@ -7,6 +7,7 @@ import (
 	"backend/internal/todo/usecases"
 	"context"
 	"database/sql"
+	"log"
 	"os"
 	"time"
 
@@ -22,6 +23,9 @@ func main() {
 	godotenv.Load()
 	redisUri := os.Getenv("REDIS_URI")
 	dbUri := os.Getenv("POSTGRES_URI")
+
+	log.Println("redisUri", redisUri)
+	log.Println("dbUri", dbUri)
 
 	// DB
 	db, err := sql.Open("postgres", dbUri)
@@ -69,7 +73,7 @@ func main() {
 // CORS Config
 func corsConfig() cors.Config {
 	return cors.Config{
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"https://localhost"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept"},
 		AllowCredentials: true,
