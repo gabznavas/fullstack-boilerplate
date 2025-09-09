@@ -24,7 +24,6 @@ export default function Home() {
   })
 
   useEffect(() => {
-    console.log(process.env.NEXT_PUBLIC_API_URL);
     const fetchTodos = async () => {
       const todos = await getAllTodos();
       setTodos(todos);
@@ -34,7 +33,6 @@ export default function Home() {
 
   const onSubmit = async (data: TodoFormInputs) => {
     const todo = await createTodo(data.title);
-    debugger
     setTodos([todo, ...todos]);
   }
 

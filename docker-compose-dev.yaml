@@ -1,0 +1,31 @@
+version: '3.9'
+
+services:
+  redis-cache:
+    image: redis:latest
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+    networks:
+      - app-network
+
+  postgres-database:
+    image: postgres:latest
+    container_name: postgres-database
+    ports:
+      - "5490:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    networks:
+      - app-network
+    depends_on:
+      - redis-cache
+    volumes:
+      - ./database/postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./database/postgres/db_data:/var/lib/postgresql/data
+
+networks:
+  app-network:
+    driver: bridge

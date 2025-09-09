@@ -4,20 +4,34 @@ import (
 	"backend/internal/todo/cache"
 	"backend/internal/todo/controller"
 	"backend/internal/todo/repository"
-	"backend/internal/todo/service"
+	"backend/internal/todo/usecases"
 	"context"
+	"database/sql"
 	"os"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 	"github.com/redis/go-redis/v9"
 )
 
 func main() {
-	redisUri := os.Getenv("REDIS_URI")
+	// Env
 	godotenv.Load()
+	redisUri := os.Getenv("REDIS_URI")
+	dbUri := os.Getenv("POSTGRES_URI")
+
+	// DB
+	db, err := sql.Open("postgres", dbUri)
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	if err := db.Ping(); err != nil {
+		panic(err)
+	}
 
 	// Redis Client
 	redisClient := redis.NewClient(&redis.Options{
@@ -40,8 +54,8 @@ func main() {
 	router.Use(cors.New(config))
 
 	// Factories
-	todoRepository := repository.NewTodoRepository()
-	todoService := service.NewTodoService(todoRepository, redisCache)
+	todoRepository := repository.NewTodoRepository(db)
+	todoService := usecases.NewTodoUsecases(todoRepository, redisCache)
 	todoController := controller.NewTodoController(todoService)
 
 	// Routes

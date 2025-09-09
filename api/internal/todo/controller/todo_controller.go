@@ -2,18 +2,18 @@ package controller
 
 import (
 	"backend/internal/todo/dtos"
-	"backend/internal/todo/service"
+	"backend/internal/todo/usecases"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type TodoController struct {
-	todoService service.TodoService
+	todoUsecases usecases.TodoUsecases
 }
 
-func NewTodoController(todoService service.TodoService) *TodoController {
-	return &TodoController{todoService: todoService}
+func NewTodoController(todoUsecases usecases.TodoUsecases) *TodoController {
+	return &TodoController{todoUsecases: todoUsecases}
 }
 
 func (c *TodoController) CreateTodo(ctx *gin.Context) {
@@ -22,7 +22,7 @@ func (c *TodoController) CreateTodo(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	todoResponse, err := c.todoService.CreateTodo(ctx, todo)
+	todoResponse, err := c.todoUsecases.CreateTodo(ctx, todo)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -31,7 +31,7 @@ func (c *TodoController) CreateTodo(ctx *gin.Context) {
 }
 
 func (c *TodoController) GetAllTodos(ctx *gin.Context) {
-	todos, err := c.todoService.GetAllTodos(ctx)
+	todos, err := c.todoUsecases.GetAllTodos(ctx)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

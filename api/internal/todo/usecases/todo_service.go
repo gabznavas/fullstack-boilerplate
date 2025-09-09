@@ -1,4 +1,4 @@
-package service
+package usecases
 
 import (
 	"backend/internal/todo/cache"
@@ -10,30 +10,27 @@ import (
 	"github.com/google/uuid"
 )
 
-type TodoService interface {
+type TodoUsecases interface {
 	CreateTodo(ctx context.Context, dto *dtos.CreateTodoRequest) (*dtos.CreateTodoResponse, error)
-	// GetTodo(id string) (*models.Todo, error)
 	GetAllTodos(ctx context.Context) ([]*models.Todo, error)
-	// UpdateTodo(todo *models.Todo) error
-	// DeleteTodo(id string) error
 }
 
-type TodoServiceImpl struct {
+type TodoUsecasesImpl struct {
 	todoRepository repository.TodoRepository
 	cache          cache.TodoCache
 }
 
-func NewTodoService(todoRepository repository.TodoRepository, cache cache.TodoCache) TodoService {
-	return &TodoServiceImpl{todoRepository: todoRepository, cache: cache}
+func NewTodoUsecases(todoRepository repository.TodoRepository, cache cache.TodoCache) TodoUsecases {
+	return &TodoUsecasesImpl{todoRepository: todoRepository, cache: cache}
 }
 
-func (s *TodoServiceImpl) CreateTodo(ctx context.Context, dto *dtos.CreateTodoRequest) (*dtos.CreateTodoResponse, error) {
+func (s *TodoUsecasesImpl) CreateTodo(ctx context.Context, dto *dtos.CreateTodoRequest) (*dtos.CreateTodoResponse, error) {
 	todo := &models.Todo{
 		Title:     dto.Title,
 		Completed: false,
 		ID:        uuid.New().String(),
 	}
-	err := s.todoRepository.CreateTodo(todo)
+	err := s.todoRepository.CreateTodo(ctx, todo)
 	if err != nil {
 		return nil, err
 	}
@@ -50,13 +47,13 @@ func (s *TodoServiceImpl) CreateTodo(ctx context.Context, dto *dtos.CreateTodoRe
 	}, nil
 }
 
-func (s *TodoServiceImpl) GetAllTodos(ctx context.Context) (todos []*models.Todo, err error) {
+func (s *TodoUsecasesImpl) GetAllTodos(ctx context.Context) (todos []*models.Todo, err error) {
 	todos, err = s.cache.GetAllTodos(ctx)
 	if err != nil {
 		return nil, err
 	}
 	if len(todos) == 0 {
-		todos, err = s.todoRepository.GetAllTodos()
+		todos, err = s.todoRepository.GetAllTodos(ctx)
 		if err != nil {
 			return nil, err
 		}
